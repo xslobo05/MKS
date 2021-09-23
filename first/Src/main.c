@@ -24,16 +24,24 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+
+
 int main(void)
 {
 	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 	GPIOA->MODER |= GPIO_MODER_MODER5_0;
 
 	/* SOS vector	*/
-	uint8_t sos_v[] = {1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0};
-	int i;
+	//uint8_t sos_v[] = {1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0};
+	//int i;
+
+	/* SOS binary sequence */
+	const uint32_t sos_b  = 0b10101000111011101110001010100000;
+	const uint32_t mask_b	= 0b10000000000000000000000000000000;
 
 	/* Loop forever */
+
+	/*
 	for(;;){
 		for (i = 0; i<sizeof(sos_v);i++){
 
@@ -46,6 +54,18 @@ int main(void)
 
 		//GPIOA->ODR ^= (1<<5); 								// toggle
 		for (volatile uint32_t j = 0; j < 100000; j++) {}
+
+	}
+	*/
+	for(;;){
+			for (uint32_t b = 0; b<32;b++){
+
+				if((sos_b << b) & mask_b)  GPIOA->BSRR = (1<<5); 				// set
+
+				else GPIOA->BRR  = (1<<5); 				// reset
+
+				for (volatile uint32_t i = 0; i < 100000; i++) {}
+			}
 
 	}
 }
