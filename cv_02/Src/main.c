@@ -25,6 +25,8 @@
 #endif
 
 #define LED_TIME_BLINK 300
+#define LED_TIME_SHORT 100
+#define LED_TIME_LONG 1000
 
 volatile uint32_t Tick;
 
@@ -56,12 +58,12 @@ int main(void)
 }
 
 void EXTI0_1_IRQHandler(void)
- {
+{
 	if (EXTI->PR & EXTI_PR_PR0) { // check line 0 has triggered the IT
-	EXTI->PR |= EXTI_PR_PR0; // clear the pending bit
-	GPIOB->ODR ^= (1<<0);
+		EXTI->PR |= EXTI_PR_PR0; // clear the pending bit
+		GPIOB->ODR ^= (1<<0);
 	}
- }
+}
 
 void SysTick_Handler(void) {
 	Tick++;
@@ -75,6 +77,25 @@ void blikac(void) {
 		delay = Tick;
 	}
 
+}
+
+void tlacitka(void) {
+
+	// DOPLNIT S1 SPUSTI LED2 NA 1000MS
+
+	static uint32_t old_s2;
+	static uint32_t off_time;
+
+	uint32_t new_s2 = GPIOC->IDR & (1<<0);
+	if (old_s2 && !new_s2) { // falling edge
+		off_time = Tick + LED_TIME_SHORT;
+		GPIOB->BSRR = (1<<0);
+	}
+	old_s2 = new_s2;
+
+	if (Tick > off_time) {
+		GPIOB->BRR = (1<<0);
+	}
 }
 #if(0)
 void blikatko(void) {
