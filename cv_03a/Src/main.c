@@ -27,9 +27,20 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+void delay(void){
+	for(uint32_t i=0;i<100000;i++);
+}
+
 int main(void)
 {
+	uint16_t num = 0;
 	sct_init();
-	sct_led(LED_TEST);
+	//sct_led(LED_TEST);
+	while(1){
+		sct_value(num);
+		num+=111;
+		if(num > 999) num=0;
+		delay();
+	}
 
 }
