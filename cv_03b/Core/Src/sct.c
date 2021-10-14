@@ -8,17 +8,11 @@
  */
 
 #include <stdint.h>
-#include "stm32f0xx.h"
 #include "sct.h"
 #include "main.h"
 
 void sct_init(void){
 
-	RCC->AHBENR |= RCC_AHBENR_GPIOBEN; // timer enable
-	GPIOB->MODER |= GPIO_MODER_MODER3_0; // CLK
-	GPIOB->MODER |= GPIO_MODER_MODER4_0; // SDI
-	GPIOB->MODER |= GPIO_MODER_MODER5_0; // NLA
-	GPIOB->MODER |= GPIO_MODER_MODER10_0; // NOE
 
 	sct_led(0);
 
