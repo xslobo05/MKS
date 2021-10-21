@@ -379,11 +379,22 @@ void uart_process_command(char *cmd)
 		while (HAL_I2C_IsDeviceReady(&hi2c1, EEPROM_ADDR, 300, 1000) == HAL_TIMEOUT) {}
 		printf("Zapsano %d (%x) na adresu %d\n",value,value,addr);
 	}
+	/*
 	else if(strcasecmp(token, "DUMP") == 0){
 		for(uint8_t dump_addr = 0x0000;dump_addr <= 0x000F; dump_addr++){
 			HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDR, dump_addr, I2C_MEMADD_SIZE_16BIT, &value, 1, 1000);
 			printf("%02x ",value);
 			if(dump_addr == 0x0007) putchar('\n');
+		}
+		putchar('\n');
+	}
+	*/
+	else if(strcasecmp(token, "DUMP") == 0){
+		uint8_t dump_vect[16];
+		HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDR, 0x0000, I2C_MEMADD_SIZE_16BIT, dump_vect, 16, 1000);
+		for(uint8_t i = 0 ;i < 16; i++){
+			printf("%02x ",dump_vect[i]);
+			if(i == 7) putchar('\n');
 		}
 		putchar('\n');
 	}
